@@ -140,6 +140,7 @@ table.res tr.foot td{background:var(--bg);font-weight:600}
 .card .gk{border:2px solid #111}
 .card .foot{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;margin-top:8px}
 .card .rt{font-weight:700;margin-top:8px}
+.card.jr .main td.l{font-weight:700}.card.jr .gk td:last-child{text-align:left;padding-left:8px}
 .card .mainwrap{flex:1 1 auto;display:flex;flex-direction:column;margin-top:8px;min-height:0}
 .card .mainwrap .main{margin-top:0;flex:1 1 auto}
 .card .foot{margin-top:auto;padding-top:8px}
@@ -173,7 +174,9 @@ table.res tr.foot td{background:var(--bg);font-weight:600}
 <script>
 //#LOGIC
 var CLASSES=[['jss1a','JSS 1A'],['jss1b','JSS 1B'],['jss2a','JSS 2A'],['jss2b','JSS 2B'],['jss3a','JSS 3A'],['jss3b','JSS 3B'],['sss1a','SSS 1A'],['sss1b','SSS 1B'],['sss2a','SSS 2A'],['sss2b','SSS 2B'],['sss3','SSS 3']];
-var JSS_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','SOCIAL STUDIES','CIVIC EDUCATION','AGRICULTURAL SCIENCE','BUSINESS STUDIES','C.R.S','COMPUTER STUDIES','HOME ECONOMICS','CULTURAL & CREATIVE ARTS','PHYSICAL & HEALTH EDUCATION'];
+var JSS_OLD=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','SOCIAL STUDIES','CIVIC EDUCATION','AGRICULTURAL SCIENCE','BUSINESS STUDIES','C.R.S','COMPUTER STUDIES','HOME ECONOMICS','CULTURAL & CREATIVE ARTS','PHYSICAL & HEALTH EDUCATION'];
+var JSS_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','P.H.E','COMPUTER STUDIES','SOCIAL STUDIES','CIVIC/SECURITY EDUCATION','HOME ECONOMICS','AGRICULTURAL SCIENCE','C.R.S','CULTURAL & CREATIVE ART','BUSINESS STUDIES','HISTORY'];
+var JSS_RENAME={'CIVIC EDUCATION':'CIVIC/SECURITY EDUCATION','CULTURAL & CREATIVE ARTS':'CULTURAL & CREATIVE ART','PHYSICAL & HEALTH EDUCATION':'P.H.E'};
 var SSS1_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','PHYSICS','CHEMISTRY','BIOLOGY','CIVIC EDUCATION','MARKETING','GOVERNMENT','LITERATURE-IN-ENGLISH','ECONOMICS','C.R.S','HISTORY','AGRICULTURAL SCIENCE','GEOGRAPHY','FINANCIAL ACCOUNTING','FURTHER MATHEMATICS'];
 var SSS2_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','PHYSICS','CHEMISTRY','BIOLOGY','CIVIC EDUCATION','ECONOMICS','AGRIC SCIENCE','GEOGRAPHY','FURTHER MATHEMATICS','ANIMAL HUSBANDRY'];
 function defaultSubjects(id){
@@ -184,7 +187,10 @@ function defaultSubjects(id){
 }
 var GK=[[75,'A1','DISTINCTION'],[70,'B2','VERY GOOD'],[65,'B3','GOOD'],[60,'C4','CREDIT'],[55,'C5','CREDIT'],[50,'C6','CREDIT'],[45,'D7','PASS'],[40,'E8','WEAK PASS'],[0,'F9','FAIL']];
 var GK_LABELS=['0-39','40-44','45-49','50-54','55-59','60-64','65-69','70-74','75-100'];
-function gradeOf(t){for(var i=0;i<GK.length;i++){if(t>=GK[i][0])return {g:GK[i][1],r:GK[i][2]}}return {g:'F9',r:'FAIL'}}
+var GKJ=[[70,'A','Distinction'],[60,'B','Very Good'],[50,'C','Good'],[40,'P','Pass'],[0,'F','Fail']];
+var GKJ_LABELS=['0 - 39','40 - 49','50 - 59','60 - 69','70 - 100'];
+function isJr(cid){return String(cid||'').indexOf('jss')===0}
+function gradeOf(t,cid){var jr=isJr(cid||(typeof V!=='undefined'&&V.cid)),K=jr?GKJ:GK;for(var i=0;i<K.length;i++){if(t>=K[i][0])return {g:K[i][1],r:K[i][2]}}return jr?{g:'F',r:'Fail'}:{g:'F9',r:'FAIL'}}
 function ord(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])}
 function num(v){var n=parseFloat(v);return isNaN(n)?0:n}
 function clampScore(v,max){return Math.max(0,Math.min(max,num(v)))}
@@ -255,8 +261,17 @@ function bucket(key,cid){
 }
 function T(cid){return bucket(termKey(),cid)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function migrateJr(o){
+  Object.keys(o.classes).forEach(function(cid){
+    var c=o.classes[cid];
+    if(!isJr(cid)||c.subjects.join('|')!==JSS_OLD.join('|'))return;
+    c.subjects=JSS_SUBJECTS.slice();
+    Object.keys(o.terms||{}).forEach(function(k){var b=o.terms[k][cid];if(!b)return;
+      ['scores','meta'].forEach(function(f){var n={};Object.keys(b[f]||{}).forEach(function(sub){n[JSS_RENAME[sub]||sub]=b[f][sub]});b[f]=n});});
+  });
+}
 function load(){
-  try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.classes){o.codes=o.codes||{};return o}}}catch(e){}
+  try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.classes){o.codes=o.codes||{};migrateJr(o);return o}}}catch(e){}
   return seed();
 }
 function seed(){
@@ -480,23 +495,23 @@ function cardsView(){
 function fl(label,val,cls){return '<span>'+label+'</span><span class="fill '+(cls||'')+'">'+esc(val==null?'':val)+'</span>'}
 function cardHTML(cid,sid){
   var c=S.classes[cid],t=T(cid),st=S.settings,r=compute(c,t);
-  var row=r.rows.filter(function(x){return x.s.id===sid})[0],ex=t.extra[sid]||{},gp=gradeOf(row.pct),has0=r.active.length>0;
+  var row=r.rows.filter(function(x){return x.s.id===sid})[0],ex=t.extra[sid]||{},gp=gradeOf(row.pct,cid),has0=r.active.length>0,jr=isJr(cid),KK=jr?GKJ:GK,KL=jr?GKJ_LABELS:GK_LABELS;
   var examined=r.rows.filter(function(x){return c.subjects.some(function(sub){return entered((t.scores[sub]||{})[x.s.id])})}).length;
   var body=c.subjects.map(function(sub,i){
-    var v=(t.scores[sub]||{})[sid],has=entered(v),tot=has?totalOf(v):null,g=has?gradeOf(tot):null,ss=r.stat[sub];
+    var v=(t.scores[sub]||{})[sid],has=entered(v),tot=has?totalOf(v):null,g=has?gradeOf(tot,cid):null,ss=r.stat[sub];
     return '<tr><td>'+(i+1)+'</td><td class="l">'+esc(sub)+'</td><td>'+(has?fmt(clampScore(v[0],40)):'')+'</td><td>'+(has?fmt(clampScore(v[1],60)):'')+'</td><td>'+(has?fmt(tot):'')+'</td><td>'+(ss.avg!==null?ss.avg.toFixed(2):'')+'</td><td>'+(has?ord(ss.pos[sid]):'')+'</td><td>'+(g?g.g:'')+'</td><td class="rm">'+(g?g.r:'')+'</td><td></td></tr>';
   }).join('');
   var chars=CHARS.map(function(k){return '<tr><td class="l">'+k+':</td><td>'+esc((ex.char||{})[k]||'')+'</td><td></td></tr>'}).join('');
-  var key=GK.slice().reverse().map(function(g,i){return '<tr><td>'+GK_LABELS[i]+'</td><td>'+g[1]+'</td><td>'+g[2]+'</td></tr>'}).join('');
+  var key=KK.slice().reverse().map(function(g,i){return '<tr><td>'+KL[i]+'</td><td>'+g[1]+'</td><td>'+g[2]+'</td></tr>'}).join('');
   var lg=st.logo==='none'?'':(st.logo||DEFAULT_LOGO);
   var logo=lg?'<img class="logo" alt="" src="'+esc(lg)+'">':'<span class="logo none"></span>';
   var cols='<colgroup><col style="width:28px"><col><col style="width:36px"><col style="width:36px"><col style="width:40px"><col style="width:48px"><col style="width:44px"><col style="width:38px"><col style="width:84px"><col style="width:66px"></colgroup>';
   var heads=['C.A (40%)','EXAM (60%)','TOTAL (100%)','CLASS AVERAGE','POSITION','GRADE','REMARK','SIGNATURE'].map(function(h){return '<th class="v">'+h+'</th>'}).join('');
-  return '<div class="card"><div class="hd">'+logo+'<div><div class="sc">'+esc(st.school)+'</div><div class="lg">'+esc(st.lga)+'</div><div class="mt">MOTTO '+esc(st.motto)+'</div></div><span class="logo none"></span></div>'+
+  return '<div class="card'+(jr?' jr':'')+'"><div class="hd">'+logo+'<div><div class="sc">'+esc(st.school)+'</div><div class="lg">'+esc(st.lga)+'</div><div class="mt">MOTTO '+esc(st.motto)+'</div></div><span class="logo none"></span></div>'+
    '<div class="line">'+fl('NAME:',row.s.name,'w2')+fl('TERM',st.term.toUpperCase())+fl('YEAR',st.session)+'</div>'+
    '<div class="line">'+fl('CLASS:',c.name)+fl('ATTENDANCE:',ex.days||'')+fl('DAY OUT OF:',t.days||'')+fl('PERCENTAGE:',has0?row.pct.toFixed(2):'')+fl('GRADE:',has0?gp.g:'')+'</div>'+
    '<div class="mainwrap"><table class="main">'+cols+'<thead><tr><th>S/N</th><th class="subj">SUBJECTS</th>'+heads+'</tr></thead><tbody>'+body+'</tbody></table></div>'+
-   '<div class="below"><table class="chars"><thead><tr><th>CHARACTER DEVELOPMENT</th><th style="width:20%">GRADE</th><th style="width:28%">SIGNATURE</th></tr></thead><tbody>'+chars+'</tbody></table><span></span><table class="gk"><thead><tr><th>SCORES</th><th>GRADE</th><th>REMARKS</th></tr></thead><tbody>'+key+'</tbody></table></div>'+
+   '<div class="below"><table class="chars"><thead><tr><th>CHARACTER DEVELOPMENT</th><th style="width:20%">GRADE</th><th style="width:28%">SIGNATURE</th></tr></thead><tbody>'+chars+'</tbody></table><span></span><table class="gk"><thead><tr><th>SCORES</th><th>GRADE</th><th>'+(jr?'REMARK':'REMARKS')+'</th></tr></thead><tbody>'+key+'</tbody></table></div>'+
    '<div class="foot"><div>'+
     '<div class="line">'+fl('Total Score:',has0?fmt(row.sum):'')+fl('Out Of:',has0?row.out:'')+'</div>'+
     '<div class="line">'+fl('No. In Class:',c.students.length)+fl('No. Examined:',examined)+fl('Position:',has0?ord(row.pos):'')+'</div>'+
