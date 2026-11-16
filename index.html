@@ -173,16 +173,18 @@ table.res tr.foot td{background:var(--bg);font-weight:600}
 
 <script>
 //#LOGIC
-var CLASSES=[['jss1a','JSS 1A'],['jss1b','JSS 1B'],['jss2a','JSS 2A'],['jss2b','JSS 2B'],['jss3a','JSS 3A'],['jss3b','JSS 3B'],['sss1a','SSS 1A'],['sss1b','SSS 1B'],['sss2a','SSS 2A'],['sss2b','SSS 2B'],['sss3','SSS 3']];
+var CLASSES=[['jss1a','JSS 1A'],['jss1b','JSS 1B'],['jss2a','JSS 2A'],['jss2b','JSS 2B'],['jss3a','JSS 3A'],['jss3b','JSS 3B'],['sss1a','SSS 1A'],['sss1b','SSS 1B'],['sss2a','SSS 2A'],['sss2b','SSS 2B'],['sss3','SSS 3 SCIENCE'],['sss3art','SSS 3 ART']];
 var JSS_OLD=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','SOCIAL STUDIES','CIVIC EDUCATION','AGRICULTURAL SCIENCE','BUSINESS STUDIES','C.R.S','COMPUTER STUDIES','HOME ECONOMICS','CULTURAL & CREATIVE ARTS','PHYSICAL & HEALTH EDUCATION'];
 var JSS_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','P.H.E','COMPUTER STUDIES','SOCIAL STUDIES','CIVIC/SECURITY EDUCATION','HOME ECONOMICS','AGRICULTURAL SCIENCE','C.R.S','CULTURAL & CREATIVE ART','BUSINESS STUDIES','HISTORY'];
 var JSS_RENAME={'CIVIC EDUCATION':'CIVIC/SECURITY EDUCATION','CULTURAL & CREATIVE ARTS':'CULTURAL & CREATIVE ART','PHYSICAL & HEALTH EDUCATION':'P.H.E'};
 var SSS1_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','PHYSICS','CHEMISTRY','BIOLOGY','CIVIC EDUCATION','MARKETING','GOVERNMENT','LITERATURE-IN-ENGLISH','ECONOMICS','C.R.S','HISTORY','AGRICULTURAL SCIENCE','GEOGRAPHY','FINANCIAL ACCOUNTING','FURTHER MATHEMATICS'];
+var SSS3_ART=['MATHEMATICS','ENGLISH LANGUAGE','CIVIC EDUCATION','LITERATURE-IN-ENGLISH','GOVERNMENT','ECONOMICS','C.R.S','HISTORY','GEOGRAPHY','MARKETING','FINANCIAL ACCOUNTING'];
 var SSS2_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','PHYSICS','CHEMISTRY','BIOLOGY','CIVIC EDUCATION','ECONOMICS','AGRIC SCIENCE','GEOGRAPHY','FURTHER MATHEMATICS','ANIMAL HUSBANDRY'];
 function defaultSubjects(id){
   if(id.indexOf('jss')===0) return JSS_SUBJECTS.slice();
   if(id==='sss1a') return SSS1_SUBJECTS.concat(['FISHERY']);
   if(id==='sss1b') return SSS1_SUBJECTS.concat(['ANIMAL HUSBANDRY']);
+  if(id==='sss3art') return SSS3_ART.slice();
   return SSS2_SUBJECTS.slice();
 }
 var GK=[[75,'A1','DISTINCTION'],[70,'B2','VERY GOOD'],[65,'B3','GOOD'],[60,'C4','CREDIT'],[55,'C5','CREDIT'],[50,'C6','CREDIT'],[45,'D7','PASS'],[40,'E8','WEAK PASS'],[0,'F9','FAIL']];
@@ -261,6 +263,10 @@ function bucket(key,cid){
 }
 function T(cid){return bucket(termKey(),cid)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function migrateSSS3(o){
+  if(o.classes.sss3&&o.classes.sss3.name==='SSS 3')o.classes.sss3.name='SSS 3 SCIENCE';
+  if(!o.classes.sss3art)o.classes.sss3art={name:'SSS 3 ART',students:[],subjects:defaultSubjects('sss3art')};
+}
 function migrateJr(o){
   Object.keys(o.classes).forEach(function(cid){
     var c=o.classes[cid];
@@ -271,7 +277,7 @@ function migrateJr(o){
   });
 }
 function load(){
-  try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.classes){o.codes=o.codes||{};migrateJr(o);return o}}}catch(e){}
+  try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.classes){o.codes=o.codes||{};migrateJr(o);migrateSSS3(o);return o}}}catch(e){}
   return seed();
 }
 function seed(){
