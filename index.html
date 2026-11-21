@@ -112,7 +112,7 @@ table.res tr.foot td{background:var(--bg);font-weight:600}
 .cardscroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg)}
 
 /* Report card paper: fixed light colours, rounded frame like the printed school form */
-.card{background:var(--paper);color:var(--paper-ink);border:3px solid #111;border-radius:36px;padding:16px 18px 18px;font-family:var(--body);font-size:12px;line-height:1.35;min-width:690px;aspect-ratio:210/297;display:flex;flex-direction:column}
+.card{background:var(--paper);color:var(--paper-ink);border:3px solid #111;border-radius:36px;padding:16px 18px 18px;font-family:var(--body);font-size:12px;line-height:1.35;min-width:690px}
 .card .hd{display:grid;grid-template-columns:86px 1fr 86px;align-items:center;gap:8px;text-align:center}
 .card .logo{width:82px;height:82px;border-radius:50%;object-fit:cover;display:block}
 .card .logo.none{visibility:hidden}
@@ -140,27 +140,17 @@ table.res tr.foot td{background:var(--bg);font-weight:600}
 .card .gk{border:2px solid #111}
 .card .foot{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;margin-top:8px}
 .card .rt{font-weight:700;margin-top:8px}
-.card.jr .main td.l{font-weight:700}.card.jr .gk td:last-child{text-align:left;padding-left:8px}
-.card .mainwrap{flex:1 1 auto;display:flex;flex-direction:column;margin-top:8px;min-height:0}
-.card .mainwrap .main{margin-top:0;flex:1 1 auto}
-.card .foot{margin-top:auto;padding-top:8px}
-.pk{display:flex;gap:6px;align-items:center;cursor:pointer}.pk input{width:18px;height:18px}
 #printRoot{display:none}
 @media print{
   body{padding:0;background:#fff}
   #app,.toast{display:none!important}
   #printRoot{display:block!important}
-  #printRoot .card{min-width:0;aspect-ratio:auto;width:194mm;height:279mm;font-size:12.5px;padding:14px 18px 16px;break-after:page;page-break-after:always;overflow:hidden}
-  #printRoot .card .main td{font-size:13px}#printRoot .card .main th{font-size:12px}#printRoot .card .main td.rm{font-size:10.5px}
-  #printRoot .card .chars td,#printRoot .card .chars th{font-size:12.5px}#printRoot .card .gk th,#printRoot .card .gk td{font-size:10.5px}
-  #printRoot .sheetwrap{height:191mm;display:flex;flex-direction:column}
-  #printRoot .sheetwrap table{flex:1 1 auto;font-size:12px!important}
-  #printRoot .sheetwrap th,#printRoot .sheetwrap td{padding:3px 5px!important}
+  #printRoot .card{min-width:0;font-size:11px;break-after:page;page-break-after:always}
   #printRoot .card:last-child{break-after:auto;page-break-after:auto}
   #printRoot .sheetwrap table{width:100%;border-collapse:collapse;font-size:10px}
   #printRoot .sheetwrap th,#printRoot .sheetwrap td{border:1px solid #111;padding:2px 4px;text-align:center;color:#111}
   #printRoot .sheetwrap td.l{text-align:left}
-  #printRoot .sheetwrap th.vert{writing-mode:vertical-rl;transform:rotate(180deg);height:140px}
+  #printRoot .sheetwrap th.vert{writing-mode:vertical-rl;transform:rotate(180deg);height:120px}
   #printRoot .sheetwrap h2{color:#111;margin-bottom:6px}
 }
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
@@ -173,26 +163,19 @@ table.res tr.foot td{background:var(--bg);font-weight:600}
 
 <script>
 //#LOGIC
-var CLASSES=[['jss1a','JSS 1A'],['jss1b','JSS 1B'],['jss2a','JSS 2A'],['jss2b','JSS 2B'],['jss3a','JSS 3A'],['jss3b','JSS 3B'],['sss1a','SSS 1A'],['sss1b','SSS 1B'],['sss2a','SSS 2A'],['sss2b','SSS 2B'],['sss3','SSS 3 SCIENCE'],['sss3art','SSS 3 ART']];
-var JSS_OLD=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','SOCIAL STUDIES','CIVIC EDUCATION','AGRICULTURAL SCIENCE','BUSINESS STUDIES','C.R.S','COMPUTER STUDIES','HOME ECONOMICS','CULTURAL & CREATIVE ARTS','PHYSICAL & HEALTH EDUCATION'];
-var JSS_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','P.H.E','COMPUTER STUDIES','SOCIAL STUDIES','CIVIC/SECURITY EDUCATION','HOME ECONOMICS','AGRICULTURAL SCIENCE','C.R.S','CULTURAL & CREATIVE ART','BUSINESS STUDIES','HISTORY'];
-var JSS_RENAME={'CIVIC EDUCATION':'CIVIC/SECURITY EDUCATION','CULTURAL & CREATIVE ARTS':'CULTURAL & CREATIVE ART','PHYSICAL & HEALTH EDUCATION':'P.H.E'};
+var CLASSES=[['jss1a','JSS 1A'],['jss1b','JSS 1B'],['jss2a','JSS 2A'],['jss2b','JSS 2B'],['jss3a','JSS 3A'],['jss3b','JSS 3B'],['sss1a','SSS 1A'],['sss1b','SSS 1B'],['sss2a','SSS 2A'],['sss2b','SSS 2B'],['sss3','SSS 3']];
+var JSS_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','SOCIAL STUDIES','CIVIC EDUCATION','AGRICULTURAL SCIENCE','BUSINESS STUDIES','C.R.S','COMPUTER STUDIES','HOME ECONOMICS','CULTURAL & CREATIVE ARTS','PHYSICAL & HEALTH EDUCATION'];
 var SSS1_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','PHYSICS','CHEMISTRY','BIOLOGY','CIVIC EDUCATION','MARKETING','GOVERNMENT','LITERATURE-IN-ENGLISH','ECONOMICS','C.R.S','HISTORY','AGRICULTURAL SCIENCE','GEOGRAPHY','FINANCIAL ACCOUNTING','FURTHER MATHEMATICS'];
-var SSS3_ART=['MATHEMATICS','ENGLISH LANGUAGE','CIVIC EDUCATION','LITERATURE-IN-ENGLISH','GOVERNMENT','ECONOMICS','C.R.S','HISTORY','GEOGRAPHY','MARKETING','FINANCIAL ACCOUNTING'];
 var SSS2_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','PHYSICS','CHEMISTRY','BIOLOGY','CIVIC EDUCATION','ECONOMICS','AGRIC SCIENCE','GEOGRAPHY','FURTHER MATHEMATICS','ANIMAL HUSBANDRY'];
 function defaultSubjects(id){
   if(id.indexOf('jss')===0) return JSS_SUBJECTS.slice();
   if(id==='sss1a') return SSS1_SUBJECTS.concat(['FISHERY']);
   if(id==='sss1b') return SSS1_SUBJECTS.concat(['ANIMAL HUSBANDRY']);
-  if(id==='sss3art') return SSS3_ART.slice();
   return SSS2_SUBJECTS.slice();
 }
 var GK=[[75,'A1','DISTINCTION'],[70,'B2','VERY GOOD'],[65,'B3','GOOD'],[60,'C4','CREDIT'],[55,'C5','CREDIT'],[50,'C6','CREDIT'],[45,'D7','PASS'],[40,'E8','WEAK PASS'],[0,'F9','FAIL']];
 var GK_LABELS=['0-39','40-44','45-49','50-54','55-59','60-64','65-69','70-74','75-100'];
-var GKJ=[[70,'A','Distinction'],[60,'B','Very Good'],[50,'C','Good'],[40,'P','Pass'],[0,'F','Fail']];
-var GKJ_LABELS=['0 - 39','40 - 49','50 - 59','60 - 69','70 - 100'];
-function isJr(cid){return String(cid||'').indexOf('jss')===0}
-function gradeOf(t,cid){var jr=isJr(cid||(typeof V!=='undefined'&&V.cid)),K=jr?GKJ:GK;for(var i=0;i<K.length;i++){if(t>=K[i][0])return {g:K[i][1],r:K[i][2]}}return jr?{g:'F',r:'Fail'}:{g:'F9',r:'FAIL'}}
+function gradeOf(t){for(var i=0;i<GK.length;i++){if(t>=GK[i][0])return {g:GK[i][1],r:GK[i][2]}}return {g:'F9',r:'FAIL'}}
 function ord(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])}
 function num(v){var n=parseFloat(v);return isNaN(n)?0:n}
 function clampScore(v,max){return Math.max(0,Math.min(max,num(v)))}
@@ -263,27 +246,14 @@ function bucket(key,cid){
 }
 function T(cid){return bucket(termKey(),cid)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function migrateSSS3(o){
-  if(o.classes.sss3&&o.classes.sss3.name==='SSS 3')o.classes.sss3.name='SSS 3 SCIENCE';
-  if(!o.classes.sss3art)o.classes.sss3art={name:'SSS 3 ART',students:[],subjects:defaultSubjects('sss3art')};
-}
-function migrateJr(o){
-  Object.keys(o.classes).forEach(function(cid){
-    var c=o.classes[cid];
-    if(!isJr(cid)||c.subjects.join('|')!==JSS_OLD.join('|'))return;
-    c.subjects=JSS_SUBJECTS.slice();
-    Object.keys(o.terms||{}).forEach(function(k){var b=o.terms[k][cid];if(!b)return;
-      ['scores','meta'].forEach(function(f){var n={};Object.keys(b[f]||{}).forEach(function(sub){n[JSS_RENAME[sub]||sub]=b[f][sub]});b[f]=n});});
-  });
-}
 function load(){
-  try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.classes){o.codes=o.codes||{};migrateJr(o);migrateSSS3(o);return o}}}catch(e){}
+  try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.classes)return o}}catch(e){}
   return seed();
 }
 function seed(){
   var classes={};
   CLASSES.forEach(function(x){classes[x[0]]={name:x[1],students:[],subjects:defaultSubjects(x[0])}});
-  var base={settings:{school:'EVANGEL COLLEGE, AROGBO.',lga:'ESE-ODO LOCAL GOVERNMENT AREA, ONDO STATE.',motto:'PROVIDING QUALITY EDUCATION AND SOUND MORALS',session:'2026/2027',term:'First Term',next:''},classes:classes,terms:{},codes:{},sample:true};
+  var base={settings:{school:'EVANGEL COLLEGE, AROGBO.',lga:'ESE-ODO LOCAL GOVERNMENT AREA, ONDO STATE.',motto:'PROVIDING QUALITY EDUCATION AND SOUND MORALS',session:'2026/2027',term:'First Term',next:''},classes:classes,terms:{},sample:true};
   S=base;
   var names=['ADEBAYO TEMITOPE','OKAFOR CHIDERA','BELLO AMINA','EKPO IDARA','NWOSU CHIOMA','OLATUNJI DAMILARE','YAKUBU FATIMA','ODION BRIGHT'];
   var c=classes.sss2a;
@@ -305,8 +275,6 @@ function seed(){
 function $(s,r){return (r||document).querySelector(s)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove('on')},2800)}
-function autoCode(sub){var w=String(sub).replace(/[^A-Z ]/g,' ').split(' ').filter(Boolean);if(!w.length)return String(sub).slice(0,3);return w.length===1?w[0].slice(0,3):w[0].slice(0,2)+w.slice(1).map(function(x){return x[0]}).join('').slice(0,2)}
-function subCode(sub){return (S.codes&&S.codes[sub])||autoCode(sub)}
 function stamp(ts){try{return new Date(ts).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
 function shortSub(s){return s}
 function scoredSubjects(cid){var c=S.classes[cid],t=T(cid);return c.subjects.filter(function(s){var m=t.scores[s]||{};return c.students.some(function(st){return entered(m[st.id])})}).length}
@@ -323,11 +291,7 @@ function copyText(text,box){
 /* ---------- sharing ---------- */
 function classListCode(cid){
   var c=S.classes[cid];
-  return enc({v:1,k:'L',cid:cid,name:c.name,students:c.students,subjects:c.subjects,codes:c.subjects.reduce(function(a,x){a[x]=subCode(x);return a},{}),session:S.settings.session,term:S.settings.term,school:{school:S.settings.school,lga:S.settings.lga,motto:S.settings.motto},days:T(cid).days||''});
-}
-function multiCode(cid,subs,by){
-  var c=S.classes[cid],t=T(cid);
-  return enc({v:1,k:'M',cid:cid,name:c.name,by:by||'',session:S.settings.session,term:S.settings.term,days:t.days||'',students:c.students.map(function(x){return [x.id,x.name]}),subs:subs.map(function(sub){var sc=t.scores[sub]||{};return {n:sub,c:subCode(sub),r:c.students.map(function(x){var v=sc[x.id]||['',''];return [v[0],v[1]]})}})});
+  return enc({v:1,k:'L',cid:cid,name:c.name,students:c.students,subjects:c.subjects,session:S.settings.session,term:S.settings.term,school:{school:S.settings.school,lga:S.settings.lga,motto:S.settings.motto},days:T(cid).days||''});
 }
 function scoresCode(cid,subject,by){
   var c=S.classes[cid],sc=T(cid).scores[subject]||{};
@@ -344,13 +308,12 @@ function importText(text){
     if(o.subjects&&o.subjects.length)c.subjects=o.subjects.map(String);
     S.settings.session=o.session||S.settings.session;S.settings.term=o.term||S.settings.term;
     if(o.school){S.settings.school=o.school.school||S.settings.school;S.settings.lga=o.school.lga||S.settings.lga;S.settings.motto=o.school.motto||S.settings.motto}
-    if(o.codes)Object.keys(o.codes).forEach(function(k){S.codes[k]=String(o.codes[k])});
     if(o.days)T(o.cid).days=String(o.days);
     save();
     return {ok:true,cid:o.cid,msg:'Class list for '+c.name+' loaded: '+c.students.length+' students, '+c.subjects.length+' subjects.'};
   }
   if(o.k==='S'){
-    if(!c.students.length)(o.rows||[]).forEach(function(r){c.students.push({id:String(r[0]),name:norm(r[1])})});
+    if(!c.students.length)return {ok:false,msg:'Load the class list for '+c.name+' first, then import these scores.'};
     var key=o.session+'|'+o.term,b=bucket(key,o.cid);
     var byId={},byName={};
     c.students.forEach(function(s){byId[s.id]=s;byName[norm(s.name)]=s});
@@ -368,22 +331,6 @@ function importText(text){
     var msg=o.subject+' for '+c.name+' ('+o.term+', '+o.session+'): '+ok+' scores imported';
     if(miss.length)msg+='. '+miss.length+' name(s) did not match: '+miss.slice(0,4).join(', ');
     return {ok:true,cid:o.cid,msg:msg+'.',warn:miss.length>0};
-  }
-  if(o.k==='M'){
-    var b2=bucket(o.session+'|'+o.term,o.cid),idx=[],added=0,i1={},n1={},fresh=!c.students.length,nsub=0,nsc=0;
-    c.students.forEach(function(x){i1[x.id]=x;n1[norm(x.name)]=x});
-    (o.students||[]).forEach(function(r){var x=i1[String(r[0])]||n1[norm(r[1])];if(!x){x={id:String(r[0]),name:norm(r[1])};c.students.push(x);i1[x.id]=x;n1[norm(x.name)]=x;if(!fresh)added++}idx.push(x)});
-    (o.subs||[]).forEach(function(q){
-      var sub=q.n;
-      if(c.subjects.indexOf(sub)<0){var m2=c.subjects.filter(function(z){return subCode(z)===q.c})[0];if(m2)sub=m2;else c.subjects.push(sub)}
-      var sc=b2.scores[sub]||{},k=0;
-      (q.r||[]).forEach(function(v,i){var x=idx[i];if(!x||(String(v[0]).trim()===''&&String(v[1]).trim()===''))return;sc[x.id]=[String(v[0]),String(v[1])];k++});
-      b2.scores[sub]=sc;b2.meta[sub]={by:o.by||'',at:Date.now(),n:k};nsub++;nsc+=k;
-      if(q.c&&q.c!==autoCode(sub))S.codes[sub]=String(q.c);
-    });
-    if(o.days&&!b2.days)b2.days=String(o.days);
-    save();
-    return {ok:true,cid:o.cid,warn:added>0,msg:nsub+' subject'+(nsub===1?'':'s')+' for '+c.name+' ('+o.term+', '+o.session+'): '+nsc+' scores imported'+(fresh?'; '+idx.length+' students created from the names':'')+(added?'; '+added+' new name(s) added to the class':'')+'.'};
   }
   return {ok:false,msg:'Unknown code type.'};
 }
@@ -427,12 +374,11 @@ function needStudents(){return '<div class="panel empty">This class has no stude
 function setupView(){
   var c=S.classes[V.cid],h='<div class="stack">';
   h+='<div class="panel stack"><h3>Students ('+c.students.length+')</h3>';
-  h+='<label class="f">Add names, one per line. You can paste a column from Excel.<textarea class="txt" id="newNames" placeholder="ADWERT FIDELIX&#10;AKPOEBI MARY"></textarea></label><div class="row"><button class="btn" data-act="add-names">Add students</button>'+(c.students.length>1?'<button class="btn sec" data-act="sort-students">Sort A to Z</button>':'')+'</div>';
+  h+='<div class="notice good">To correct a spelling, tap the name in the list below, retype it, then tap outside the box. Scores, positions and report cards update with the new spelling.</div><label class="f">Add names, one per line. You can paste a column from Excel.<textarea class="txt" id="newNames" placeholder="ADWERT FIDELIX&#10;AKPOEBI MARY"></textarea></label><div class="row"><button class="btn" data-act="add-names">Add students</button>'+(c.students.length>1?'<button class="btn sec" data-act="sort-students">Sort A to Z</button>':'')+'</div>';
   if(c.students.length){h+='<div>'+c.students.map(function(s,i){return '<div class="stu"><span class="n">'+(i+1)+'</span><input class="txt" data-stu="'+s.id+'" value="'+esc(s.name)+'" aria-label="Student name '+(i+1)+'"><button class="btn sec sm" data-act="del-student" data-sid="'+s.id+'" data-arm="1" aria-label="Remove '+esc(s.name)+'">Remove</button></div>'}).join('')+'</div>'}
   h+='</div>';
   h+='<div class="panel stack"><h3>Subjects ('+c.subjects.length+')</h3><div class="chips">'+c.subjects.map(function(s,i){return '<span class="chip">'+esc(s)+'<button data-act="del-subject" data-i="'+i+'" data-arm="1" aria-label="Remove '+esc(s)+'">&times;</button></span>'}).join('')+'</div>';
-  h+='<div class="row"><input class="txt" id="newSub" placeholder="Add a subject" style="flex:1 1 180px"><button class="btn" data-act="add-subject">Add</button></div><span class="small muted">Removing a subject also removes its scores for every term.</span>';
-  h+='<div class="small muted">Subject codes: short names teachers see when sending and receiving scores. Change any you like.</div><div class="fields">'+c.subjects.map(function(s){return '<label class="f">'+esc(s)+'<input class="txt" data-subcode="'+esc(s)+'" value="'+esc(subCode(s))+'" maxlength="6"></label>'}).join('')+'</div></div>';
+  h+='<div class="row"><input class="txt" id="newSub" placeholder="Add a subject" style="flex:1 1 180px"><button class="btn" data-act="add-subject">Add</button></div><span class="small muted">Removing a subject also removes its scores for every term.</span></div>';
   h+='</div>';
   return h;
 }
@@ -442,7 +388,7 @@ function scoresView(){
   if(!c.students.length)return needStudents();
   if(!V.subject||c.subjects.indexOf(V.subject)<0)V.subject=c.subjects[0];
   var sc=T(V.cid).scores[V.subject]||{};
-  var h='<div class="stack"><div class="fields"><label class="f">Subject<select class="txt" id="subjSel">'+c.subjects.map(function(s){return '<option value="'+esc(s)+'"'+(s===V.subject?' selected':'')+'>'+esc(subCode(s))+' &middot; '+esc(s)+'</option>'}).join('')+'</select></label></div>';
+  var h='<div class="stack"><div class="fields"><label class="f">Subject<select class="txt" id="subjSel">'+c.subjects.map(function(s){return '<option'+(s===V.subject?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></label></div>';
   h+='<div class="legend"><span><i class="sw-in"></i>Yellow: type scores here</span><span><i class="sw-auto"></i>Green: worked out for you</span></div>';
   h+='<div class="progress" id="prog"></div><div class="panel"><div class="shead"><span>Student</span><span>CA /40</span><span>Exam /60</span><span>Total</span><span>Grade</span></div>';
   h+=c.students.map(function(s,i){
@@ -475,10 +421,10 @@ function sheetTable(c,t,r){
     var i=c.students.indexOf(x.s);
     h+='<tr><td>'+(i+1)+'</td><td class="l">'+esc(x.s.name)+(x.missing?' <span class="muted" title="Missing scores">('+x.missing+' missing)</span>':'')+'</td>';
     r.active.forEach(function(sub){var tot=totalOf((t.scores[sub]||{})[x.s.id]);h+='<td'+(tot!==null&&tot<40?' class="f9"':'')+'>'+(tot===null?'-':fmt(tot))+'</td>'});
-    var g=gradeOf(x.pct);
-    h+='<td class="a">'+fmt(x.sum)+'</td><td class="a">'+x.pct.toFixed(2)+'</td><td class="a">'+g.g+'</td><td class="a">'+ord(x.pos)+'</td></tr>';
+    var g=gradeOf(Math.round(x.pct));
+    h+='<td class="a">'+fmt(x.sum)+'</td><td class="a">'+Math.round(x.pct)+'</td><td class="a">'+g.g+'</td><td class="a">'+ord(x.pos)+'</td></tr>';
   });
-  h+='<tr class="foot"><td></td><td class="l">Class average</td>'+r.active.map(function(s){return '<td>'+r.stat[s].avg.toFixed(2)+'</td>'}).join('')+'<td colspan="4"></td></tr></tbody></table>';
+  h+='<tr class="foot"><td></td><td class="l">Class average</td>'+r.active.map(function(s){return '<td>'+r.stat[s].avg.toFixed(0)+'</td>'}).join('')+'<td colspan="4"></td></tr></tbody></table>';
   return h;
 }
 
@@ -501,23 +447,23 @@ function cardsView(){
 function fl(label,val,cls){return '<span>'+label+'</span><span class="fill '+(cls||'')+'">'+esc(val==null?'':val)+'</span>'}
 function cardHTML(cid,sid){
   var c=S.classes[cid],t=T(cid),st=S.settings,r=compute(c,t);
-  var row=r.rows.filter(function(x){return x.s.id===sid})[0],ex=t.extra[sid]||{},gp=gradeOf(row.pct,cid),has0=r.active.length>0,jr=isJr(cid),KK=jr?GKJ:GK,KL=jr?GKJ_LABELS:GK_LABELS;
+  var row=r.rows.filter(function(x){return x.s.id===sid})[0],ex=t.extra[sid]||{},gp=gradeOf(Math.round(row.pct)),has0=r.active.length>0;
   var examined=r.rows.filter(function(x){return c.subjects.some(function(sub){return entered((t.scores[sub]||{})[x.s.id])})}).length;
   var body=c.subjects.map(function(sub,i){
-    var v=(t.scores[sub]||{})[sid],has=entered(v),tot=has?totalOf(v):null,g=has?gradeOf(tot,cid):null,ss=r.stat[sub];
-    return '<tr><td>'+(i+1)+'</td><td class="l">'+esc(sub)+'</td><td>'+(has?fmt(clampScore(v[0],40)):'')+'</td><td>'+(has?fmt(clampScore(v[1],60)):'')+'</td><td>'+(has?fmt(tot):'')+'</td><td>'+(ss.avg!==null?ss.avg.toFixed(2):'')+'</td><td>'+(has?ord(ss.pos[sid]):'')+'</td><td>'+(g?g.g:'')+'</td><td class="rm">'+(g?g.r:'')+'</td><td></td></tr>';
+    var v=(t.scores[sub]||{})[sid],has=entered(v),tot=has?totalOf(v):null,g=has?gradeOf(tot):null,ss=r.stat[sub];
+    return '<tr><td>'+(i+1)+'</td><td class="l">'+esc(sub)+'</td><td>'+(has?fmt(clampScore(v[0],40)):'')+'</td><td>'+(has?fmt(clampScore(v[1],60)):'')+'</td><td>'+(has?fmt(tot):'')+'</td><td>'+(ss.avg!==null?ss.avg.toFixed(0):'')+'</td><td>'+(has?ord(ss.pos[sid]):'')+'</td><td>'+(g?g.g:'')+'</td><td class="rm">'+(g?g.r:'')+'</td><td></td></tr>';
   }).join('');
   var chars=CHARS.map(function(k){return '<tr><td class="l">'+k+':</td><td>'+esc((ex.char||{})[k]||'')+'</td><td></td></tr>'}).join('');
-  var key=KK.slice().reverse().map(function(g,i){return '<tr><td>'+KL[i]+'</td><td>'+g[1]+'</td><td>'+g[2]+'</td></tr>'}).join('');
+  var key=GK.slice().reverse().map(function(g,i){return '<tr><td>'+GK_LABELS[i]+'</td><td>'+g[1]+'</td><td>'+g[2]+'</td></tr>'}).join('');
   var lg=st.logo==='none'?'':(st.logo||DEFAULT_LOGO);
   var logo=lg?'<img class="logo" alt="" src="'+esc(lg)+'">':'<span class="logo none"></span>';
   var cols='<colgroup><col style="width:28px"><col><col style="width:36px"><col style="width:36px"><col style="width:40px"><col style="width:48px"><col style="width:44px"><col style="width:38px"><col style="width:84px"><col style="width:66px"></colgroup>';
   var heads=['C.A (40%)','EXAM (60%)','TOTAL (100%)','CLASS AVERAGE','POSITION','GRADE','REMARK','SIGNATURE'].map(function(h){return '<th class="v">'+h+'</th>'}).join('');
-  return '<div class="card'+(jr?' jr':'')+'"><div class="hd">'+logo+'<div><div class="sc">'+esc(st.school)+'</div><div class="lg">'+esc(st.lga)+'</div><div class="mt">MOTTO '+esc(st.motto)+'</div></div><span class="logo none"></span></div>'+
+  return '<div class="card"><div class="hd">'+logo+'<div><div class="sc">'+esc(st.school)+'</div><div class="lg">'+esc(st.lga)+'</div><div class="mt">MOTTO '+esc(st.motto)+'</div></div><span class="logo none"></span></div>'+
    '<div class="line">'+fl('NAME:',row.s.name,'w2')+fl('TERM',st.term.toUpperCase())+fl('YEAR',st.session)+'</div>'+
-   '<div class="line">'+fl('CLASS:',c.name)+fl('ATTENDANCE:',ex.days||'')+fl('DAY OUT OF:',t.days||'')+fl('PERCENTAGE:',has0?row.pct.toFixed(2):'')+fl('GRADE:',has0?gp.g:'')+'</div>'+
-   '<div class="mainwrap"><table class="main">'+cols+'<thead><tr><th>S/N</th><th class="subj">SUBJECTS</th>'+heads+'</tr></thead><tbody>'+body+'</tbody></table></div>'+
-   '<div class="below"><table class="chars"><thead><tr><th>CHARACTER DEVELOPMENT</th><th style="width:20%">GRADE</th><th style="width:28%">SIGNATURE</th></tr></thead><tbody>'+chars+'</tbody></table><span></span><table class="gk"><thead><tr><th>SCORES</th><th>GRADE</th><th>'+(jr?'REMARK':'REMARKS')+'</th></tr></thead><tbody>'+key+'</tbody></table></div>'+
+   '<div class="line">'+fl('CLASS:',c.name)+fl('ATTENDANCE:',ex.days||'')+fl('DAY OUT OF:',t.days||'')+fl('PERCENTAGE:',has0?Math.round(row.pct):'')+fl('GRADE:',has0?gp.g:'')+'</div>'+
+   '<table class="main">'+cols+'<thead><tr><th>S/N</th><th class="subj">SUBJECTS</th>'+heads+'</tr></thead><tbody>'+body+'</tbody></table>'+
+   '<div class="below"><table class="chars"><thead><tr><th>CHARACTER DEVELOPMENT</th><th style="width:20%">GRADE</th><th style="width:28%">SIGNATURE</th></tr></thead><tbody>'+chars+'</tbody></table><span></span><table class="gk"><thead><tr><th>SCORES</th><th>GRADE</th><th>REMARKS</th></tr></thead><tbody>'+key+'</tbody></table></div>'+
    '<div class="foot"><div>'+
     '<div class="line">'+fl('Total Score:',has0?fmt(row.sum):'')+fl('Out Of:',has0?row.out:'')+'</div>'+
     '<div class="line">'+fl('No. In Class:',c.students.length)+fl('No. Examined:',examined)+fl('Position:',has0?ord(row.pos):'')+'</div>'+
@@ -537,14 +483,13 @@ function shareView(){
     h+='<textarea class="txt codebox" id="codeL" readonly>'+esc(code)+'</textarea><div class="row"><button class="btn" data-act="copy" data-box="codeL">Copy</button><button class="btn sec" data-act="save-file" data-box="codeL" data-name="'+c.name.replace(/\s/g,'')+'_class_list.txt">Save as file</button></div>';
   }
   h+='</div>';
-  h+='<div class="panel stack"><h3>Send scores: any teacher</h3><span class="small muted">Tick the subject codes you want to send. Tick all of them to send the whole class: every name and every subject score.</span>';
-  if(!c.students.length)h+='<div class="notice">Add the class names in Setup (or load the class list) first.</div>';
+  h+='<div class="panel stack"><h3>Subject teacher: send my scores</h3>';
+  if(!c.students.length)h+='<div class="notice">Load the class list first.</div>';
   else{
-    V.pick=V.pick||{};
-    h+='<div class="chips">'+c.subjects.map(function(s){return '<label class="chip pk" style="padding:6px 12px"><input type="checkbox" data-pick="'+esc(s)+'"'+(V.pick[s]?' checked':'')+'><b>'+esc(subCode(s))+'</b> '+esc(s)+'</label>'}).join('')+'</div>';
-    h+='<div class="row"><button class="btn sec sm" data-act="pick-all">Tick all</button><button class="btn sec sm" data-act="pick-none">Clear</button></div>';
-    h+='<label class="f">Your name (optional)<input class="txt" id="byName" value="'+esc(V.by||'')+'"></label><button class="btn" data-act="make-scores">Make code</button>';
-    if(V.scoreCode){h+='<textarea class="txt codebox" id="codeS" readonly>'+esc(V.scoreCode)+'</textarea><div class="row"><button class="btn" data-act="copy" data-box="codeS">Copy</button><button class="btn sec" data-act="save-file" data-box="codeS" data-name="'+c.name.replace(/\s/g,'')+'_scores.txt">Save as file</button></div>'}
+    if(!V.subject||c.subjects.indexOf(V.subject)<0)V.subject=c.subjects[0];
+    h+='<div class="fields"><label class="f">Subject<select class="txt" id="shareSub">'+c.subjects.map(function(s){return '<option'+(s===V.subject?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></label><label class="f">Your name (optional)<input class="txt" id="byName" value="'+esc(V.by||'')+'"></label></div>';
+    h+='<button class="btn" data-act="make-scores">Make code for '+esc(V.subject)+'</button>';
+    if(V.scoreCode){h+='<textarea class="txt codebox" id="codeS" readonly>'+esc(V.scoreCode)+'</textarea><div class="row"><button class="btn" data-act="copy" data-box="codeS">Copy</button><button class="btn sec" data-act="save-file" data-box="codeS" data-name="'+c.name.replace(/\s/g,'')+'_'+V.subject.replace(/[^A-Za-z0-9]+/g,'')+'.txt">Save as file</button></div>'}
   }
   h+='</div>';
   h+='<div class="panel stack"><h3>Class teacher: receive subject scores</h3><textarea class="txt codebox" id="classCode" placeholder="Paste the message from the subject teacher"></textarea><div class="row"><button class="btn" data-act="import-class">Import</button><label class="btn sec" style="display:inline-flex;align-items:center">Choose a saved file<input type="file" id="fileClass" accept=".txt,text/plain" hidden></label></div>';
@@ -553,7 +498,7 @@ function shareView(){
   if(c.students.length){
     h+='<div class="panel stack"><h3>What has arrived</h3><div class="tblwrap"><table class="res"><thead><tr><th class="l">Subject</th><th>Scored</th><th class="l">Received from</th></tr></thead><tbody>'+c.subjects.map(function(s){
       var sc=t.scores[s]||{},n=c.students.filter(function(x){return entered(sc[x.id])}).length,m=t.meta[s];
-      return '<tr><td class="l"><b>'+esc(subCode(s))+'</b> '+esc(s)+'</td><td class="a">'+n+'/'+c.students.length+'</td><td class="l">'+(m?esc((m.by?m.by+', ':'')+stamp(m.at)):'<span class="muted">typed here or not yet sent</span>')+'</td></tr>';
+      return '<tr><td class="l">'+esc(s)+'</td><td class="a">'+n+'/'+c.students.length+'</td><td class="l">'+(m?esc((m.by?m.by+', ':'')+stamp(m.at)):'<span class="muted">typed here or not yet sent</span>')+'</td></tr>';
     }).join('')+'</tbody></table></div></div>';
   }
   return h+'</div>';
@@ -566,7 +511,7 @@ function render(){
 }
 function printHTML(html,orient){
   $('#printRoot').innerHTML=html;
-  $('#pageStyle').textContent='@page{size:A4 '+orient+';margin:8mm}';
+  $('#pageStyle').textContent='@page{size:A4 '+orient+';margin:10mm}';
   try{window.print()}catch(e){}
   toast('If no print window opened, open this app in your browser or from the saved file.');
 }
@@ -593,7 +538,7 @@ document.addEventListener('click',function(e){
     setTimeout(function(){if(b.isConnected){delete b.dataset.armed;b.textContent=b.dataset.orig}},3000);return;
   }
   var a=b.dataset.act,c=V.cid?S.classes[V.cid]:null;
-  if(a==='open'){V.screen='class';V.cid=b.dataset.cid;V.tab=S.classes[V.cid].students.length?'scores':'setup';V.subject=null;V.sid=null;V.msg=null;V.scoreCode=null;V.pick={};render();window.scrollTo(0,0)}
+  if(a==='open'){V.screen='class';V.cid=b.dataset.cid;V.tab=S.classes[V.cid].students.length?'scores':'setup';V.subject=null;V.sid=null;V.msg=null;V.scoreCode=null;render();window.scrollTo(0,0)}
   else if(a==='home'){V.screen='home';V.msg=null;render()}
   else if(a==='tab'){V.tab=b.dataset.tab;V.msg=null;render()}
   else if(a==='toggle-settings'){V.settings=!V.settings;render()}
@@ -611,8 +556,7 @@ document.addEventListener('click',function(e){
   else if(a==='print-card'){printHTML(cardHTML(V.cid,V.sid),'portrait')}
   else if(a==='print-all'){printHTML(c.students.map(function(s){return cardHTML(V.cid,s.id)}).join(''),'portrait')}
   else if(a==='print-sheet'){var t2=T(V.cid),r2=compute(c,t2);printHTML('<div class="sheetwrap"><h2>'+esc(S.settings.school)+' '+esc(c.name)+' &middot; '+esc(S.settings.term)+' '+esc(S.settings.session)+'</h2>'+sheetTable(c,t2,r2)+'</div>','landscape')}
-  else if(a==='make-scores'){V.by=($('#byName').value||'').trim();var ps=c.subjects.filter(function(x){return V.pick&&V.pick[x]});if(!ps.length){toast('Tick at least one subject.');return}V.scoreCode='SCORES | '+c.name+' | '+ps.map(subCode).join(', ')+' | '+S.settings.term+' '+S.settings.session+(V.by?' | '+V.by:'')+'\nECA1.'+multiCode(V.cid,ps,V.by);render()}
-  else if(a==='pick-all'||a==='pick-none'){V.by=($('#byName')||{value:V.by}).value;V.pick={};if(a==='pick-all')c.subjects.forEach(function(x){V.pick[x]=true});V.scoreCode=null;render()}
+  else if(a==='make-scores'){V.by=($('#byName').value||'').trim();V.scoreCode='SCORES | '+V.subject+' | '+c.name+' | '+S.settings.term+' '+S.settings.session+(V.by?' | '+V.by:'')+'\nECA1.'+scoresCode(V.cid,V.subject,V.by);render()}
   else if(a==='copy'){var box=$('#'+b.dataset.box);copyText(box.value,box)}
   else if(a==='save-file'){var bx=$('#'+b.dataset.box);if(!download(b.dataset.name,bx.value))copyText(bx.value,bx);else toast('Saved. If nothing downloaded, use Copy instead.')}
   else if(a==='import-home'){var tx=$('#homeCode').value;afterImport(importText(tx),'home')}
@@ -633,15 +577,13 @@ document.addEventListener('input',function(e){
 document.addEventListener('change',function(e){
   var el=e.target;
   if(el.id==='subjSel'){V.subject=el.value;render()}
-  
+  else if(el.id==='shareSub'){V.subject=el.value;V.scoreCode=null;render()}
   else if(el.id==='stuSel'){V.sid=el.value;render()}
   else if(el.dataset.set){S.settings[el.dataset.set]=el.value.trim();save();render()}
-  else if(el.dataset.stu){var s=S.classes[V.cid].students.filter(function(x){return x.id===el.dataset.stu})[0];if(s&&norm(el.value)){s.name=norm(el.value);save()}}
+  else if(el.dataset.stu){var s=S.classes[V.cid].students.filter(function(x){return x.id===el.dataset.stu})[0];if(s&&norm(el.value)){s.name=norm(el.value);el.value=s.name;save();toast('Name updated.')}}
   else if(el.dataset.days){T(V.cid).days=el.value.trim();save();render()}
   else if(el.dataset.ex){var t=T(V.cid);t.extra[V.sid]=t.extra[V.sid]||{};t.extra[V.sid][el.dataset.ex]=el.value.trim();save();render()}
   else if(el.dataset.char){var t3=T(V.cid);t3.extra[V.sid]=t3.extra[V.sid]||{};t3.extra[V.sid].char=t3.extra[V.sid].char||{};t3.extra[V.sid].char[el.dataset.char]=el.value;save();render()}
-  else if(el.dataset.pick!==undefined){V.by=($('#byName')||{value:V.by}).value;V.pick[el.dataset.pick]=el.checked;V.scoreCode=null;render()}
-  else if(el.dataset.subcode!==undefined){var cv=norm(el.value).replace(/[^A-Z0-9]/g,'').slice(0,6);if(cv)S.codes[el.dataset.subcode]=cv;else delete S.codes[el.dataset.subcode];save();render()}
   else if(el.id==='logoFile')loadLogo(el);
   else if(el.id==='fileHome')readFile(el,'home');
   else if(el.id==='fileClass')readFile(el,'class');
