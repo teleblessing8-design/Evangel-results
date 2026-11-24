@@ -163,11 +163,13 @@ table.res tr.foot td{background:var(--bg);font-weight:600}
 
 <script>
 //#LOGIC
-var CLASSES=[['jss1a','JSS 1A'],['jss1b','JSS 1B'],['jss2a','JSS 2A'],['jss2b','JSS 2B'],['jss3a','JSS 3A'],['jss3b','JSS 3B'],['sss1a','SSS 1A'],['sss1b','SSS 1B'],['sss2a','SSS 2A'],['sss2b','SSS 2B'],['sss3','SSS 3']];
+var CLASSES=[['jss1a','JSS 1A'],['jss1b','JSS 1B'],['jss2a','JSS 2A'],['jss2b','JSS 2B'],['jss3a','JSS 3A'],['jss3b','JSS 3B'],['sss1a','SSS 1A'],['sss1b','SSS 1B'],['sss2a','SSS 2A'],['sss2b','SSS 2B'],['sss3','SSS 3A'],['sss3b','SSS 3B']];
 var JSS_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','BASIC SCIENCE','BASIC TECHNOLOGY','SOCIAL STUDIES','CIVIC EDUCATION','AGRICULTURAL SCIENCE','BUSINESS STUDIES','C.R.S','COMPUTER STUDIES','HOME ECONOMICS','CULTURAL & CREATIVE ARTS','PHYSICAL & HEALTH EDUCATION'];
 var SSS1_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','PHYSICS','CHEMISTRY','BIOLOGY','CIVIC EDUCATION','MARKETING','GOVERNMENT','LITERATURE-IN-ENGLISH','ECONOMICS','C.R.S','HISTORY','AGRICULTURAL SCIENCE','GEOGRAPHY','FINANCIAL ACCOUNTING','FURTHER MATHEMATICS'];
 var SSS2_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','PHYSICS','CHEMISTRY','BIOLOGY','CIVIC EDUCATION','ECONOMICS','AGRIC SCIENCE','GEOGRAPHY','FURTHER MATHEMATICS','ANIMAL HUSBANDRY'];
+var ART_SUBJECTS=['MATHEMATICS','ENGLISH LANGUAGE','CIVIC EDUCATION','LITERATURE-IN-ENGLISH','GOVERNMENT','C.R.S','HISTORY','ECONOMICS','GEOGRAPHY','MARKETING','FINANCIAL ACCOUNTING','AGRICULTURAL SCIENCE'];
 function defaultSubjects(id){
+  if(id==='sss2b'||id==='sss3b') return ART_SUBJECTS.slice();
   if(id.indexOf('jss')===0) return JSS_SUBJECTS.slice();
   if(id==='sss1a') return SSS1_SUBJECTS.concat(['FISHERY']);
   if(id==='sss1b') return SSS1_SUBJECTS.concat(['ANIMAL HUSBANDRY']);
@@ -246,14 +248,24 @@ function bucket(key,cid){
 }
 function T(cid){return bucket(termKey(),cid)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function migrate(o){
+  if(o.ver>=2)return o;
+  CLASSES.forEach(function(x){if(!o.classes[x[0]])o.classes[x[0]]={name:x[1],students:[],subjects:defaultSubjects(x[0])}});
+  o.classes.sss3.name='SSS 3A';
+  ['sss2b','sss3b'].forEach(function(id){
+    var used=Object.keys(o.terms||{}).some(function(k){var b=o.terms[k][id];return b&&Object.keys(b.scores||{}).some(function(sub){return Object.keys(b.scores[sub]||{}).length})});
+    if(!used)o.classes[id].subjects=defaultSubjects(id);
+  });
+  o.ver=2;return o;
+}
 function load(){
-  try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.classes)return o}}catch(e){}
+  try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.classes)return migrate(o)}}catch(e){}
   return seed();
 }
 function seed(){
   var classes={};
   CLASSES.forEach(function(x){classes[x[0]]={name:x[1],students:[],subjects:defaultSubjects(x[0])}});
-  var base={settings:{school:'EVANGEL COLLEGE, AROGBO.',lga:'ESE-ODO LOCAL GOVERNMENT AREA, ONDO STATE.',motto:'PROVIDING QUALITY EDUCATION AND SOUND MORALS',session:'2026/2027',term:'First Term',next:''},classes:classes,terms:{},sample:true};
+  var base={settings:{school:'EVANGEL COLLEGE, AROGBO.',lga:'ESE-ODO LOCAL GOVERNMENT AREA, ONDO STATE.',motto:'PROVIDING QUALITY EDUCATION AND SOUND MORALS',session:'2026/2027',term:'First Term',next:''},classes:classes,terms:{},sample:true,ver:2};
   S=base;
   var names=['ADEBAYO TEMITOPE','OKAFOR CHIDERA','BELLO AMINA','EKPO IDARA','NWOSU CHIOMA','OLATUNJI DAMILARE','YAKUBU FATIMA','ODION BRIGHT'];
   var c=classes.sss2a;
